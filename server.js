@@ -1,6 +1,10 @@
 const express = require('express')
 const app = express()
+const UserController = require('./controllers/Users')
 
+
+app.use(express.json())
+app.use('/users', UserController)
 
 app.get('/', (req, res) => {
     res.send("<h1>Hello all ye nations of planet EARF</h1>")
