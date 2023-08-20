@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const UserController = require('./controllers/Users')
 
-
+//Middleware
 app.use(express.json())
 app.use('/users', UserController)
 
