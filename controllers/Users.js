@@ -15,7 +15,7 @@ const pool = require('../db/db.js')
 
 router.get('/', async (req, res, next) => {
     try{
-        data = await pool.query("SELECT * FROM users")
+        data = await pool.query("SELECT * FROM persons")
         res.status(200).json(data.rows)
     } catch(err) {
         console.log(err)
