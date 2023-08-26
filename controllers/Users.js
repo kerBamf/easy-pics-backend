@@ -13,6 +13,7 @@ const pool = require('../db/db.js')
 //     })
 // })
 
+//Get all users
 router.get('/', async (req, res, next) => {
     try{
         data = await pool.query("SELECT * FROM persons")
@@ -20,6 +21,28 @@ router.get('/', async (req, res, next) => {
     } catch(err) {
         console.log(err)
         next()
+    }
+})
+
+//Get User By ID
+router.get('/:id', async (req, res, next) => {
+    try {
+        id = parseInt(req.params.id)
+        data = await pool.query("SELECT * FROM persons WHERE id = $1", [id]);
+        res.status(200).json(data);
+    } catch(err) {
+        console.log(err)
+        res.status(404).send("Oopsy, can't find that")
+    }
+})
+
+//Create New User
+router.post('/', async (req, res, next) => {
+    try {
+        data = JSON(req.body)
+    } catch(err) {
+        console.log(err)
+        res.status(400).send("That didn't work...")
     }
 })
 
