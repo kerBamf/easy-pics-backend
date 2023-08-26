@@ -29,7 +29,7 @@ router.get('/:id', async (req, res, next) => {
     try {
         id = parseInt(req.params.id)
         data = await pool.query("SELECT * FROM persons WHERE id = $1", [id]);
-        res.status(200).json(data);
+        res.status(200).json(data.rows);
     } catch(err) {
         console.log(err)
         res.status(404).send("Oopsy, can't find that")
@@ -39,7 +39,9 @@ router.get('/:id', async (req, res, next) => {
 //Create New User
 router.post('/', async (req, res, next) => {
     try {
-        data = JSON(req.body)
+       let { firstname, lastname, birthday, address, phonenumber, blurb } = req.body;
+       await pool.query("INSERT INTO persons (firstname, lastname, birthday, address, phonenumber, blurb) VALUES ($1, $2, $3, $4, $5, $6);", [firstname, lastname,  birthday, address, phonenumber, blurb]);
+       res.status(401).send("You made a new person!")
     } catch(err) {
         console.log(err)
         res.status(400).send("That didn't work...")
