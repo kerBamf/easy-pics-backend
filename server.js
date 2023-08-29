@@ -1,9 +1,11 @@
 const express = require('express')
 const app = express()
 const UserController = require('./controllers/Users')
+const cors = require('cors')
 
 //Middleware
 app.use(express.json())
+app.use(cors())
 app.use('/users', UserController)
 
 app.get('/', (req, res) => {
