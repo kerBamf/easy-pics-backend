@@ -48,4 +48,29 @@ router.post('/', async (req, res, next) => {
     }
 })
 
+//Edit User
+router.put('/:id', async (req, res, next) => {
+    try {
+        let { firstname, lastname, birthday, address, phonenumber, blurb } = req.body;
+        const id = req.params.id
+        await pool.query("UPDATE persons SET firstname = $1, lastname = $2, birthday = $3, address = $4, phonenumber = $5, blurb = $6 WHERE id = $7", [firstname, lastname, birthday, address, phonenumber, blurb, id]);
+        res.status(201).send("You edited that person!")
+    } catch(err) {
+        console.log(err)
+        res.status(400).send("That didn't work...")
+    }
+})
+
+//Delete User
+router.delete('/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id
+        await pool.query("DELETE FROM persons WHERE id = $1", [id]);
+        res.status(201).send("You successfully deleted that person!")
+    } catch(err) {
+        console.log(err)
+        res.status(400).send("That didn't work...")
+    }
+})
+
 module.exports = router
