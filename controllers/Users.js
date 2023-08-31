@@ -48,12 +48,49 @@ router.post('/', async (req, res, next) => {
     }
 })
 
+//Post a bunch of users (for stock)
+router.post('/bulk', async (req, res, next) => {
+    const client = await pool.connect()
+    try {
+        await client.query('BEGIN')
+        for (let i = 0; i < req.body.length; i++) {
+                let { firstname, lastname, birthday, address, phonenumber, blurb } = req.body[i];
+                await client.query("INSERT INTO persons (firstname, lastname, birthday, address, phonenumber, blurb) VALUES ($1, $2, $3, $4, $5, $6);", [firstname, lastname,  birthday, address, phonenumber, blurb]);
+            }
+        await client.query('COMMIT')
+        res.status(201).send("You added a shit ton of people!") 
+    } catch(err) {
+        await client.query('ROLLBACK')
+        console.log(err)
+        res.status(401).send("That didn't work...")
+    }
+})
+
+
+//Edit users bulk
+router.put('/bulk', async (req, res, next) => {
+    const client = await pool.connect()
+    try {
+        await client.query('BEGIN')
+        for (let i = 0; i < req.body.length; i++) {
+            let { firstname, lastname, birthday, address, phonenumber, blurb, piclink, id } = req.body[i];
+            await pool.query("UPDATE persons SET firstname = $1, lastname = $2, birthday = $3, address = $4, phonenumber = $5, blurb = $6, piclink = $7 WHERE id = $8", [firstname, lastname, birthday, address, phonenumber, blurb, piclink, id]);
+            }
+        await client.query('COMMIT')
+        res.status(201).send("You edited a shit ton of people!") 
+    } catch(err) {
+        await client.query('ROLLBACK')
+        console.log(err)
+        res.status(401).send("That didn't work...")
+    }
+})
+
 //Edit User
 router.put('/:id', async (req, res, next) => {
     try {
-        let { firstname, lastname, birthday, address, phonenumber, blurb } = req.body;
+        let { firstname, lastname, birthday, address, phonenumber, blurb, piclink } = req.body;
         const id = req.params.id
-        await pool.query("UPDATE persons SET firstname = $1, lastname = $2, birthday = $3, address = $4, phonenumber = $5, blurb = $6 WHERE id = $7", [firstname, lastname, birthday, address, phonenumber, blurb, id]);
+        await pool.query("UPDATE persons SET firstname = $1, lastname = $2, birthday = $3, address = $4, phonenumber = $5, blurb = $6, piclink = $7 WHERE id = $8", [firstname, lastname, birthday, address, phonenumber, blurb, piclink, id]);
         res.status(201).send("You edited that person!")
     } catch(err) {
         console.log(err)
