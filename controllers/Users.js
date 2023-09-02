@@ -29,6 +29,7 @@ router.get('/:id', async (req, res, next) => {
     try {
         id = parseInt(req.params.id)
         data = await pool.query("SELECT * FROM persons WHERE id = $1", [id]);
+        console.log(data.rows)
         res.status(200).json(data.rows);
     } catch(err) {
         console.log(err)
